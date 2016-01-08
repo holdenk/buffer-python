@@ -15,7 +15,7 @@ Bufferapp.com details some useful entities:
   * info
 
 Every entity can be seen as an object that has attributes and methods. Those
-methdos and attributes are linked to certain endpoints.
+methods and attributes are linked to certain endpoints.
 
 All objects are special dicts. For example, you can do something like:
 ```python
