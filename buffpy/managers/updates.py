@@ -1,4 +1,5 @@
 from buffpy.models.update import Update
+import urllib
 
 PATHS = {
   'GET_PENDING': 'profiles/%s/updates/pending.json',
@@ -105,8 +106,8 @@ class Updates(list):
     '''
 
     url = PATHS['CREATE']
-
-    post_data = "text=%s&" % text
+    
+    post_data = "text=%s&" % urllib.quote(text.encode("utf-8"))
     post_data += "profile_ids[]=%s&" % self.profile_id
 
     if shorten:
@@ -125,7 +126,7 @@ class Updates(list):
       media_format = "media[%s]=%s&"
 
       for media_type, media_item in media.iteritems():
-        post_data += media_format % (media_type, media_item)
+        post_data += media_format % (media_type, urllib.quote(media_item.encode("utf-8")))        
 
     response = self.api.post(url=url, data=post_data)
     new_update = Update(api=self.api, raw_response=response['updates'][0])
