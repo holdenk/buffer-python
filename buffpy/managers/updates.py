@@ -3,7 +3,7 @@ import urllib
 
 PATHS = {
   'GET_PENDING': 'profiles/%s/updates/pending.json',
-  'GET_SENT': 'profiles/%s/updates/sent.json',
+  'GET_SENT': 'profiles/%s/updates/sent.json?page=%s',
   'SHUFFLE': 'profiles/%s/updates/shuffle.json',
   'REORDER': 'profiles/%s/updates/reorder.json',
   'CREATE': 'updates/create.json',
@@ -51,11 +51,17 @@ class Updates(list):
     '''
 
     sent_updates = []
-    url = PATHS['GET_SENT'] % self.profile_id
+    page=1
+    url = PATHS['GET_SENT'] % (self.profile_id, page)
+
 
     response = self.api.get(url=url)
-    for update in response['updates']:
-      sent_updates.append(Update(api=self.api, raw_response=update))
+    while len(response['updates']) > 0:
+      for update in response['updates']:
+        sent_updates.append(Update(api=self.api, raw_response=update))
+      page = page + 1
+      url = PATHS['GET_SENT'] % (self.profile_id, page)
+      response = self.api.get(url=url)
 
     self.__sent = sent_updates
 
